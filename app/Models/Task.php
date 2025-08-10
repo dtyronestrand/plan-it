@@ -5,12 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\User;
-use App\Models\Calendar;
 
 class Task extends Model
 {
- protected $fillable = [
+    protected $fillable = [
         'name',
         'user_id',
         'calendar_id',
@@ -39,7 +37,7 @@ class Task extends Model
     {
         return $this->hasMany(SubTask::class);
     }
-    
+
     public function attachments(): HasMany
     {
         return $this->hasMany(Attachment::class);

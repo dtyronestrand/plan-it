@@ -9,13 +9,21 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from 'dayjs';
 import { useDateState } from '../../composables/useDateState';
 
+let currentYear = dayjs().year();
 const { selectedYear, setSelectedYear } = useDateState();
+setSelectedYear(currentYear)
 
 function modifyYear(v: number){
     setSelectedYear(selectedYear.value + v);
+
 }
+
+    
+
+
 </script>
 
 <style scoped>

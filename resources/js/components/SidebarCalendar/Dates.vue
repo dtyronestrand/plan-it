@@ -2,10 +2,10 @@
     <div class="w-full bg-slate-500 p-5 rounded-b-lg">
 <div class="grid grid-cols-7 place-items-center gap-x-2 gap-y-4">
 <div v-for="day in days" :key="day">
-<span class="text-gray-50">{{ day }}</span>
+<span class="text-slate-50">{{ day }}</span>
 </div>
 <div v-for="date in calendarDates" :key="date.key" class="h-8 w-8 flex items-center justify-center">
-<button class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold" :class="date.isCurrentMonth ? 'text-white' : 'text-gray-400'"><span>{{ date.day }}</span></button>
+<button class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold" :class="date.isCurrentMonth ? 'text-white' : 'text-slate-400'"><span>{{ date.day }}</span></button>
 </div>
 </div>
 
@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed} from 'vue';
+import {computed, onMounted} from 'vue';
 import dayjs from 'dayjs';
 import { useDateState } from '../../composables/useDateState';
 
@@ -21,7 +21,9 @@ const { selectedYear, selectedMonth, selectedDate, setSelectedDate } = useDateSt
 const days = [
     "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 ]
-
+onMounted (()=>{
+    console.log(selectedMonth.value)
+})
 const calendarDates = computed(() => {
     const year = selectedYear.value;
     const month = selectedMonth.value;
@@ -36,7 +38,7 @@ const calendarDates = computed(() => {
         dates.push({
             day: currentDate.getDate(),
             isCurrentMonth: currentDate.getMonth() === month,
-            key: `${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}`
+            key: `${currentDate.getFullYear()}-${String(currentDate.getMonth()).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`
         });
     }
     return dates;

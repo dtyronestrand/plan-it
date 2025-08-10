@@ -7,15 +7,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SubTask extends Model
 {
-protected $fillable = [
-    'name',
-    'done',
-    'task_id',
-];
+    protected $fillable = [
+        'name',
+        'done',
+        'task_id',
+    ];
 
-public function task(): BelongsTo
-{
-    return $this->belongsTo(Task::class);
-}
-
+    public function task(): BelongsTo
+    {
+        return $this->belongsTo(Task::class);
+    }
 }

@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 class Attachment extends Model
 {
-   protected $fillable = [
+    protected $fillable = [
         'file_path',
         'file_name',
         'mime_type',
@@ -16,7 +17,7 @@ class Attachment extends Model
     /**
      * Get the task that owns the attachment.
      */
-public function task(): BelongsTo
+    public function task(): BelongsTo
     {
         return $this->belongsTo(Task::class);
     }
