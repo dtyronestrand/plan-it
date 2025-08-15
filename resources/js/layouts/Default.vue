@@ -46,8 +46,9 @@
                 </nav>
             </header>
             <select data-choose-theme>
-                <option value="">Default</option>
+                <option value="caramellatte">Caramellatte</option>
                 <option value="luxury">Luxury</option>
+                <option value="bumblebee">Bumble Bee</option>
                 <option value="pink">Pink</option>
             </select>
             <main class="mx-10">

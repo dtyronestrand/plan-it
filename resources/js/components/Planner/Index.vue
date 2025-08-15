@@ -1,5 +1,5 @@
 <template>
-    <div class="week-container bg-base-100 grid grid-cols-6 grid-rows-3 sm:flex sm:flex-row sm:flex-wrap sm:items-center ">
+    <div class="week-container bg-base-100 md:gap-4 md:grid md:grid-cols-6 md:grid-rows-9 md:items-start sm:flex sm:flex-row sm:flex-wrap sm:items-center ">
       <Weekday/>
       <Someday/>
     </div>

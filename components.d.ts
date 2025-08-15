@@ -137,6 +137,7 @@ declare module 'vue' {
     Someday: typeof import('./resources/js/components/Planner/Someday.vue')['default']
     TaskInput: typeof import('./resources/js/components/Planner/TaskInput.vue')['default']
     TextLink: typeof import('./resources/js/components/TextLink.vue')['default']
+    Tiptap: typeof import('./resources/js/components/Tiptap.vue')['default']
     Tooltip: typeof import('./resources/js/components/ui/tooltip/Tooltip.vue')['default']
     TooltipContent: typeof import('./resources/js/components/ui/tooltip/TooltipContent.vue')['default']
     TooltipProvider: typeof import('./resources/js/components/ui/tooltip/TooltipProvider.vue')['default']

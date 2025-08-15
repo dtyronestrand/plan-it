@@ -19,7 +19,7 @@ interface Props {
     taskName?: string;
     class?: string;
     disabled?: boolean;
-    due: string;
+    due?: string;
     completed?: boolean;
  
 }

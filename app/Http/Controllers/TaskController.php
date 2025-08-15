@@ -38,15 +38,19 @@ class TaskController extends Controller
             'notes' => 'nullable|string',
             'done' => 'boolean',
             'due_date' => 'nullable|date',
+            'sub_tasks' => 'nullable|array',
+            'attachments' => 'nullable|array',
         ]);
 
         $task = new Task([
             'name' => $validatedData['name'],
             'user_id' => $validatedData['user_id'],
-            'calendar_id' => $validatedData['calendar_id'],
+            'calendar_id' => $validatedData['calendar_id']??null,
             'notes' => $validatedData['notes'] ?? null,
             'done' => $validatedData['done'] ?? false,
             'due_date' => $validatedData['due_date'] ?? null,
+            'sub_tasks' => $validatedData['sub_tasks'] ?? [],
+            'attachments' => $validatedData['attachments'] ?? [],
         ]);
 
         $task->save();
@@ -79,7 +83,33 @@ class TaskController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+      
+
+              $request->validate([
+            'name' => 'required|string|max:255',
+            'user_id' => 'required|exists:users,id',
+            'calendar_id' => 'required|exists:calendars,id',
+            'notes' => 'nullable|string',
+            'done' => 'boolean',
+            'due_date' => 'nullable|date',
+            'sub_tasks' => 'nullable|array',
+            'attachments' => 'nullable|array',
+        ]);
+
+        $task = Task::findOrFail($id);
+
+        $task->update([
+            'name' => $request->name,
+            'user_id' => $request->user_id,
+            'calendar_id' => $request->calendar_id,
+            'notes' => $request->notes ?? null,
+            'done' => $request->done ?? false,
+            'due_date' => $request->due_date ?? null,
+            'sub_tasks' => $request->subtasks ?? [],
+            'attachments' => $request->attachments ?? [],
+        ]);
+
+        return response(['message' => 'Task updated successfully']);
     }
 
     /**

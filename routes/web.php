@@ -27,3 +27,6 @@ Route::put('calendars/{user_id}/{calendar}', [CalendarController::class, 'update
 
 Route::post('tasks', [TaskController::class, 'store'])
     ->name('tasks.store');
+
+Route::put('tasks/{id}', [TaskController::class, 'update'])
+    ->name('tasks.update');
