@@ -1,10 +1,10 @@
 <template>
     <div>
-<ul class="flex flex-row justify-center menu bg-slate-700 text-slate-200 min-h-full w-80 p-4">
-    <li><i-gg-chevron-left-o @click="modifyYear(-1)" style="color: var(--slate-200); font-size:3rem;"/></li>
-    <li class="text-center text-5xl align-self-center ">{{ selectedYear }}</li>
-    <li><i-gg-chevron-right-o @click="modifyYear(1)" style="color: var(--slate-200); font-size:3rem;"/></li>
-    </ul>
+        <ul class="menu text-base-100 flex min-h-full w-80 flex-row justify-center bg-primary p-4">
+            <li><i-gg-chevron-left-o @click="modifyYear(-1)" style="color: var(--color-primary-content); font-size: 3rem" /></li>
+            <li class="align-self-center text-center text-5xl text-primary-content" >{{ selectedYear }}</li>
+            <li><i-gg-chevron-right-o @click="modifyYear(1)" style="color: var(--color-primary-content); font-size: 3rem" /></li>
+        </ul>
     </div>
 </template>
 
@@ -14,18 +14,11 @@ import { useDateState } from '../../composables/useDateState';
 
 let currentYear = dayjs().year();
 const { selectedYear, setSelectedYear } = useDateState();
-setSelectedYear(currentYear)
+setSelectedYear(currentYear);
 
-function modifyYear(v: number){
+function modifyYear(v: number) {
     setSelectedYear(selectedYear.value + v);
-
 }
-
-    
-
-
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

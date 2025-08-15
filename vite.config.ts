@@ -5,8 +5,13 @@ import { defineConfig } from 'vite';
 import Components from 'unplugin-vue-components/vite'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
+import vueDevTools from 'vite-plugin-vue-devtools';
+
 export default defineConfig({
     plugins: [
+        vueDevTools({
+            appendTo: 'resources/js/app.ts'
+        }),
         Components({
             dirs: ['resources/js/components'],
             resolvers: [

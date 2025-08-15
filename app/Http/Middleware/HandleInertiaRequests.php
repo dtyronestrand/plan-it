@@ -42,9 +42,11 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'name' => config('app.name'),
-            'quote' => ['message' => trim($message), 'author' => trim($author)],
+     
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user()?->load(['calendars' => function ($query) {
+                    $query->where('is_active', true);
+                }]),
             ],
             'ziggy' => [
                 ...(new Ziggy)->toArray(),

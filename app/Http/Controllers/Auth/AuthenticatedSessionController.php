@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
-
+use App\Models\Calendar;
+use App\Http\Controllers\CalendarController;
 class AuthenticatedSessionController extends Controller
 {
     /**
@@ -31,9 +32,11 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
-        $request->session()->regenerate();
-
-        return redirect()->intended(route('dashboard', absolute: false));
+        session()->regenerate();
+        $calendarId = Calendar::where('user_id', $request->user()->id)
+            ->where('is_default', true)
+            ->value('id');
+        return redirect()->intended(route('calendars.show', ['user_id' => $request->user()->id, 'id' => $calendarId]));
     }
 
     /**

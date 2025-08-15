@@ -40,6 +40,7 @@ declare module 'vue' {
     Collapsible: typeof import('./resources/js/components/ui/collapsible/Collapsible.vue')['default']
     CollapsibleContent: typeof import('./resources/js/components/ui/collapsible/CollapsibleContent.vue')['default']
     CollapsibleTrigger: typeof import('./resources/js/components/ui/collapsible/CollapsibleTrigger.vue')['default']
+    CreateCalendarModal: typeof import('./resources/js/components/Planner/CreateCalendarModal.vue')['default']
     DateDisplay: typeof import('./resources/js/components/DateDisplay.vue')['default']
     Dates: typeof import('./resources/js/components/SidebarCalendar/Dates.vue')['default']
     DeleteUser: typeof import('./resources/js/components/DeleteUser.vue')['default']

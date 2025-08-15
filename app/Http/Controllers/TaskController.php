@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Task;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
-er
+use App\Models\Calendar;
+
 class TaskController extends Controller
 {
     /**
@@ -22,7 +23,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-       return Inertia::render('Pages/Main')
+     
     }
 
     /**
@@ -39,9 +40,22 @@ class TaskController extends Controller
             'due_date' => 'nullable|date',
         ]);
 
-        $task = Task::create($validatedData);
+        $task = new Task([
+            'name' => $validatedData['name'],
+            'user_id' => $validatedData['user_id'],
+            'calendar_id' => $validatedData['calendar_id'],
+            'notes' => $validatedData['notes'] ?? null,
+            'done' => $validatedData['done'] ?? false,
+            'due_date' => $validatedData['due_date'] ?? null,
+        ]);
 
-        return response()->json($task, 201);
+        $task->save();
+
+
+        return to_route('calendars.show', [
+            'user_id' => $request->user()->id,
+            'calendar' => Calendar::findOrFail($validatedData['calendar_id'])
+        ])->with('success', 'Task created successfully.');
     }
 
     /**

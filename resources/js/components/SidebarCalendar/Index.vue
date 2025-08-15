@@ -1,16 +1,13 @@
 <template>
     <div class="" v-bind="$attrs">
-       <div class="flex flex-col gap-8 items-center justify-center bg-slate-800 text-slate-200 p-4">
-    <Year/>
+        <div class="text-base-content flex flex-col items-center justify-center gap-8 bg-base-300 p-4">
+            <Year />
+        
+        <Month />
     </div>
-<Month/>
     </div>
 </template>
 
-<script setup lang="ts">
-import { useDateState } from '../../composables/useDateState';
-</script>
+<script setup lang="ts"></script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
-
+use App\Models\Calendar;
 class RegisteredUserController extends Controller
 {
     /**
@@ -44,8 +44,22 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
+      $calendar = Calendar::create([
+            'user_id' => $user->id,
+            'name' => 'Default Calendar',
+            'description' => 'This is your default calendar.',
+            'color' => '#FF5733', // Example color
+            'is_default' => true,
+            'is_active' => true,
+        ]);
+        $calendar->save();
+
+
         Auth::login($user);
 
-        return to_route('dashboard');
+        return to_route('calendars.show', [
+            'user_id' => $user->id,
+            'id' => $calendar->where('is_default', true)->first()->id,
+        ])->with('success', __('auth.registered'));
     }
 }
