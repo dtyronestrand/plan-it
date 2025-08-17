@@ -13,35 +13,8 @@
             <span v-if="page.props.tasks && page.props.tasks.length > 0" >
             <span v-for="(task, taskIndex) in page.props.tasks" :key="task.id" >
             <div v-if="task.due_date === view.format('YYYY-MM-DD')" >
-                <div @click="openModal(task)" role="button" class="col-span-2  border-b border-base-content/10 cursor-pointer">{{ task.name }}</div>
-                <!-- Modal -->
-                <div v-if="selectedTask && selectedTask.id === task.id" class="fixed inset-0 bg-base-300 bg-opacity-20 flex items-center justify-center z-50" @click="closeModal">
-                    <div class="bg-base-100 p-6 rounded-lg max-w-md w-full mx-4" @click.stop>
-                        <form @submit.prevent="submitForm" class="space-y-4">
-                            <input v-model="selectedTask.name" type="text" class="input input-bordered w-full" placeholder="Task Name" />
-                            <div v-for="(subtask, subIndex) in selectedTask.sub_tasks" :key="subIndex" class="flex items-center">
-                                <input v-model="subtask.name" type="text" class="input input-bordered w-full mr-2" placeholder="Subtask Name" />
-                                <button @click.prevent="removeSubtask(subIndex)" class="btn btn-sm ">-</button>
-                                </div>
-                            <div>
-                                <p class="mb-2">Add Subtask</p>
-                                <button @click.prevent="addSubtask" class="btn btn-sm btn-success mb-2">+</button>
-                                <div v-for="(sub, subIndex) in selectedTask.subtasks" :key="subIndex" class="flex items-center mb-2">
-                                    <input v-model="sub.name" type="text" class="input input-bordered w-full mr-2" placeholder="Subtask Name" />
-                                    <button @click.prevent="removeSubtask(subIndex)" class="btn btn-sm btn-error">-</button>
-                                </div>
-                            </div>
-                            <div>
-                                <p class="mb-2">Notes</p>
-                                <QuillEditor theme="snow" v-model="selectedTask.notes" class="mb-2" />
-                            </div>
-                            <div class="flex gap-2">
-                                <button type="submit" class="btn btn-success flex-1">Save</button>
-                                <button @click="closeModal" type="button" class="btn btn-error">Cancel</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                <Task :task="task" @taskStatus="handleTaskStatus"/>
+                
                 
                 </div>
             </span>
@@ -72,21 +45,25 @@
 import dayjs from 'dayjs';
 import { computed, watchEffect, ref } from 'vue';
 import { useDateState } from '../../composables/useDateState';
-import {usePage, useForm} from '@inertiajs/vue3';
+import {usePage, useForm, router} from '@inertiajs/vue3';
 import TaskInput from './TaskInput.vue';
+import Task from './Task.vue'; 
 import { QuillEditor } from '@vueup/vue-quill';
-
+import Checkmark from './Checkmark.vue';
 interface Props {
-    taskProps?: {
+    task?: {
         name: string;
         due: string;
-        completed: boolean;
-        sub: string;
+        notes: string;
+        subtasks: { name: string; done: boolean }[];    
+        done: boolean;
+   
     };
 }
 const props = defineProps<Props>();
 const page = usePage();
 const { selectedYear, selectedMonth, selectedDate, setSelectedDate } = useDateState();
+
 
 const weekView = computed(() => {
     const selectedDay = dayjs(`${selectedYear.value}-${selectedMonth.value + 1}-${selectedDate.value}`);
@@ -102,6 +79,7 @@ const taskList = computed(() => {
     }));
 });
 const selectedTask = ref(null);
+
 
 const form = useForm({
     name: '',
@@ -124,7 +102,30 @@ const submitForm = () => {
         form.put(`/tasks/${selectedTask.value.id}`);
     }
 };
-
+const handleTaskStatus= (updatedTask) => {
+    console.log('handleTaskStatus called with:', updatedTask);
+    router.put(
+        `/tasks/${updatedTask.id}`,
+        {
+            id: updatedTask.id,
+            name: updatedTask.name,
+            due_date: updatedTask.due_date,
+            notes: updatedTask.notes,
+            subtasks: updatedTask.subtasks,
+            user_id: page.props.auth.user.id,
+            calendar_id: page.props.calendar.id,
+            done: updatedTask.done 
+        },
+        {
+            onSuccess: () => {
+                router.reload();
+            },
+            onError: () => {
+                // Handle error
+            }
+        }
+    );
+};
 const openModal = (task) => {
     selectedTask.value = { ...task, subtasks: task.subtasks || [] };
 };
@@ -161,5 +162,10 @@ watchEffect(()=>{
     @apply row-span-1;
     grid-column: 6;
     grid-row: 2;
+}
+
+.done {
+    text-decoration: line-through;
+    color: #888888;
 }
 </style>

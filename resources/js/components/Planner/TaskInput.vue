@@ -5,6 +5,7 @@
         v-model="taskName"
         :disabled="props.disabled"
         :calendarId ="props.calendarId"
+        
         :due="props.due"
         type="text"
         @blur="handleBlur"

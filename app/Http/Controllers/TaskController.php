@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Task;
-use Illuminate\Http\JsonResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 use Illuminate\Validation\ValidationException;
 use App\Models\Calendar;
 
@@ -109,7 +110,10 @@ class TaskController extends Controller
             'attachments' => $request->attachments ?? [],
         ]);
 
-        return response(['message' => 'Task updated successfully']);
+        return to_route('calendars.show', [
+            'user_id' => $request->user()->id,
+            'calendar' => Calendar::findOrFail($request->calendar_id)
+        ])->with('success', 'Task updated successfully.');
     }
 
     /**
