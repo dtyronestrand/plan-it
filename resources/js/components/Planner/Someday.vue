@@ -1,16 +1,21 @@
 <template>
     <div class="col-span-6">
-        <div class="grid grid-cols-3 gap-4">
-            <h2 class="text-base-content col-span-3 mx-5 border-b-4 border-base-content text-5xl">Someday</h2>
-            <div role="button" v-for="task in taskList" :key="task.id" class="col-span-1 row-start-2 mx-5" >
-        <Task :task="task" @taskStatus="handleTaskStatus"/>
+        <h2 class="text-base-content mx-5 border-b-4 border-base-content text-5xl mb-4">Someday</h2>
+        <div class="mx-5">
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <div v-for="task in taskList" :key="task.id" role="button">
+                    <Task :task="task" @taskStatus="handleTaskStatus"/>
+                </div>
+                <TaskInput v-for="i in (3 - (taskList.length % 3)) % 3" :key="'empty-' + i" :disabled="true" :due="null" :calendarId="page.props.calendar.id" />
             </div>
-            <TaskInput class="col-span-1" :disabled="false" :due="null" :calendarId="page.props.calendar.id" />
-            <span v-for="i in (8-taskList.length)" :key="i" class="col-span-3">
-                <TaskInput :disabled="true" :due="null" :calendarId="page.props.calendar.id" />
-</span>
+            <div class="grid grid-cols-3 gap-4">
+                <TaskInput :disabled="false" :due="null" :calendarId="page.props.calendar.id" />
+                <TaskInput v-for="i in (9-taskList.length)" :key="i" :disabled="true" :due="null" :calendarId="page.props.calendar.id" />
+            </div>
         </div>
     </div>
+ 
+
 </template>
 
 <script setup lang="ts">
