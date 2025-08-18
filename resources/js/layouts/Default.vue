@@ -12,26 +12,31 @@
                     <ul class="align-self-center flex flex-row gap-4 justify-self-center">
                         <li class="flex flex-row items-center gap-2">
                             <div class="dropdown dropdown-bottom dropdown-center m-auto">
-                                <div tabindex="0" role="button" class="min-w-1 rounded-full bg-base-100 text-[2rem]">
-                                    <p class="rounded-full p-2 text-base-content">{{ initials }}</p>
+                                <div tabindex="0" role="button" class="rounded-[50%] w-15 h-15 bg-base-100 text-[2rem]">
+                                    <p class="p-2 text-base-content place-self-center justify-self-center">{{ initials }}</p>
                                 </div>
-
-                                <div tabindex="0" class="dropdown-content menu rounded-box z-1 text-base-content w-52 bg-base-100 p-5 shadow-sm">
-                                    <p class="pl-2">Settings</p>
+                                <div tabindex="0" class="dropdown-content pl-5 pb-5 menu rounded-box z-1 text-primary-content w-full min-w-md bg-primary shadow-sm">
+                                    <figure v-if="$page.props.auth.user.avatar"  class="flex items-center gap-2">
+                                        <img  :src="$page.props.auth.user.avatar" alt="Avatar" class="h-10 w-10 rounded-full"/>
+                                        <figcaption class="text-lg font-semibold">{{ $page.props.auth.user.name }}</figcaption>
+                                        </figure>
+                                        <div v-else class="flex m-5 mt-5 text-xl text-center mx-auto items-center gap-2 rounded-[50%] justify-center h-15 w-15 border-4 border-accent">{{ initials }}</div>
+                                        <div class="mx-auto">{{$page.props.auth.user.name}}</div>
+                                        <div class="grid grid-cols-2 justify-between gap-2 mb-5">
+                                        <div class="text-center">
+                                        <label for="select-calendar" class="text-sm">Select Calendar:</label>
+                                        <select id="select-calendar" v-model="selectedCalendarId" @change="updateCalendar" class="select select-bordered select-sm w-full max-w-xs">
+                                            <option v-for="calendar in $page.props.auth.user.calendars" :key="calendar.id" :value="calendar.id">{{ calendar.name }}</option>
+                                        </select>
+                                        </div>
+                                        <div><button type="button">Calendar Settings</button></div>
+                                        </div>
+                                    <hr />
                                     <ul>
                                         <li>Edit Profile</li>
                                         <li v-if="$page.props.auth.user.calendars.length > 1">
                                             <p>Switch Calendars</p>
-                                            <select  v-model="selectedCalendarId" @change="updateCalendar">
-                                                <option
-                                                    class="text-accent-content focus:text-base-100 border-base-100 border focus:border-slate-300"
-                                                    v-for="calendar in $page.props.auth.user.calendars"
-                                                    :key="calendar.id"
-                                                    :value="calendar.id"
-                                                >
-                                                    {{ calendar.name }}
-                                                </option>
-                                            </select>
+                                  
                                         </li>
                                         <li><button type="button" @click="createCalendar = true">Create New Calendar</button></li>
                                         <li><button type="button" @click="logout">Logout</button></li>
@@ -45,12 +50,6 @@
                     </ul>
                 </nav>
             </header>
-            <select data-choose-theme>
-                <option value="caramellatte">Caramellatte</option>
-                <option value="luxury">Luxury</option>
-                <option value="bumblebee">Bumble Bee</option>
-                <option value="pink">Pink</option>
-            </select>
             <main class="mx-10">
                 <CreateCalendarModal :createCalendar="createCalendar" @close="createCalendar = false" />
                 <slot />
@@ -146,12 +145,7 @@ const month = computed(() => {
 });
 </script>
 <style scoped>
-div,
-[popover] {
-    margin: 0;
-    padding: 0;
-    border: 0;
-}
+
 #settings_anchor {
     anchor-name: --settings_anchor;
 }
