@@ -80,6 +80,8 @@ declare module 'vue' {
     IGgChevronRightO: typeof import('~icons/gg/chevron-right-o')['default']
     IGgChevvronRight: typeof import('~icons/gg/chevvron-right')['default']
     IGgMoreVerticalO: typeof import('~icons/gg/more-vertical-o')['default']
+    IMdiCalendar: typeof import('~icons/mdi/calendar')['default']
+    IMdieCalendar: typeof import('~icons/mdi/e-calendar')['default']
     Index: typeof import('./resources/js/components/Planner/Index.vue')['default']
     Input: typeof import('./resources/js/components/ui/input/Input.vue')['default']
     InputError: typeof import('./resources/js/components/InputError.vue')['default']

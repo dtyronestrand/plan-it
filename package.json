@@ -12,6 +12,7 @@
     "devDependencies": {
         "@eslint/js": "^9.19.0",
         "@iconify-json/gg": "^1.2.2",
+        "@iconify-json/mdi": "^1.2.3",
         "@types/node": "^22.13.5",
         "@vue/eslint-config-typescript": "^14.3.0",
         "daisyui": "^5.0.50",

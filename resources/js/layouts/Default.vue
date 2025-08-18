@@ -15,7 +15,7 @@
                                 <div tabindex="0" role="button" class="rounded-[50%] w-15 h-15 bg-base-100 text-[2rem]">
                                     <p class="p-2 text-base-content place-self-center justify-self-center">{{ initials }}</p>
                                 </div>
-                                <div tabindex="0" class="dropdown-content pl-5 pb-5 menu rounded-box z-1 text-primary-content w-full min-w-md bg-primary shadow-sm">
+                                <div tabindex="0" class="dropdown-content pl-5 pb-5 menu rounded-box z-1 text-base-content w-full min-w-md bg-base-100 shadow-sm">
                                     <figure v-if="$page.props.auth.user.avatar"  class="flex items-center gap-2">
                                         <img  :src="$page.props.auth.user.avatar" alt="Avatar" class="h-10 w-10 rounded-full"/>
                                         <figcaption class="text-lg font-semibold">{{ $page.props.auth.user.name }}</figcaption>
@@ -23,21 +23,16 @@
                                         <div v-else class="flex m-5 mt-5 text-xl text-center mx-auto items-center gap-2 rounded-[50%] justify-center h-15 w-15 border-4 border-accent">{{ initials }}</div>
                                         <div class="mx-auto">{{$page.props.auth.user.name}}</div>
                                         <div class="grid grid-cols-2 justify-between gap-2 mb-5">
-                                        <div class="text-center">
-                                        <label for="select-calendar" class="text-sm">Select Calendar:</label>
-                                        <select id="select-calendar" v-model="selectedCalendarId" @change="updateCalendar" class="select select-bordered select-sm w-full max-w-xs">
-                                            <option v-for="calendar in $page.props.auth.user.calendars" :key="calendar.id" :value="calendar.id">{{ calendar.name }}</option>
-                                        </select>
+                                        <div v-for="calendar in $page.props.auth.user.calendars" :key="calendar.id">
+                                        <i-mdi-calendar class="text-2xl" />
+                                        <button type="button" class="btn btn-ghost text-lg" @click="updateCalendar(calendar)">{{ calendar.name }}</button>
+                                        <div v-if="calendar.id === selectedCalendarId"><button class="btn btn-md bttn-primary">Settings</button></div>
                                         </div>
-                                        <div><button type="button">Calendar Settings</button></div>
                                         </div>
+                            
                                     <hr />
                                     <ul>
-                                        <li>Edit Profile</li>
-                                        <li v-if="$page.props.auth.user.calendars.length > 1">
-                                            <p>Switch Calendars</p>
-                                  
-                                        </li>
+                        
                                         <li><button type="button" @click="createCalendar = true">Create New Calendar</button></li>
                                         <li><button type="button" @click="logout">Logout</button></li>
                                     </ul>
@@ -81,13 +76,8 @@ watch(() => $page.props.calendar, (newCalendar) => {
     selectedCalendarId.value = newCalendar.id;
 });
 let initials = getInitials($page.props.auth.user.name);
-const updateCalendar = () => {
-    const selectedCalendar = $page.props.auth.user.calendars.find(calendar => calendar.id === selectedCalendarId.value);
-    if (selectedCalendar) {
-    router.get(route('calendars.show', { user_id: $page.props.auth.user.id, calendar: selectedCalendar.id }));
-    // If you need to reload calendar data after navigation, you can call:
-    router.reload();
-    }
+const updateCalendar = (calendar) => {
+    router.get(route('calendars.show', { user_id: $page.props.auth.user.id, calendar: calendar.id }));
 };
 
 
@@ -166,5 +156,32 @@ const month = computed(() => {
         opacity: 1;
         transform: scale(1);
     }
+}
+select {
+
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 0 1em 0 0;
+  margin: 0;
+  width: 100%;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: inherit;
+  line-height: inherit;
+  outline: none;
+}
+.select {
+  width: 100%;
+  min-width: 15ch;
+  max-width: 45ch;
+  border: 1px solid var(--color-primary);
+  border-radius: 0.25em;
+  padding: 0.25em 0.5em;
+  font-size: 1rem;
+  cursor: pointer;
+  line-height: 1.1;
+  background: var(--color-accent);
+  background-image: linear-gradient(to top, #var(--color-accent), #var(--color-accent) 33%);
 }
 </style>
