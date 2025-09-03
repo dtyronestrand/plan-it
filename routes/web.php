@@ -30,3 +30,6 @@ Route::post('tasks', [TaskController::class, 'store'])
 
 Route::put('tasks/{id}', [TaskController::class, 'update'])
     ->name('tasks.update');
+
+Route::delete('calendars/{user_id}/{calendar}', [CalendarController::class, 'destroy'])
+    ->name('calendars.destroy');

@@ -48,8 +48,6 @@ import { useDateState } from '../../composables/useDateState';
 import {usePage, useForm, router} from '@inertiajs/vue3';
 import TaskInput from './TaskInput.vue';
 import Task from './Task.vue'; 
-import { QuillEditor } from '@vueup/vue-quill';
-import Checkmark from './Checkmark.vue';
 interface Props {
     task?: {
         name: string;
@@ -136,13 +134,13 @@ const closeModal = () => {
 
 const addSubtask = () => {
     if (selectedTask.value) {
-        selectedTask.value.subtasks.push({ name: '', done: false });// Add a new subtask with default values
+        selectedTask.value.sub_tasks.push({ name: '', done: false });// Add a new subtask with default values
     }
 };
 
 const removeSubtask = (index: number) => {
     if (selectedTask.value) {
-        selectedTask.value.subtasks.splice(index, 1);
+        selectedTask.value.sub_tasks.splice(index, 1);
     }
 };
 watchEffect(()=>{

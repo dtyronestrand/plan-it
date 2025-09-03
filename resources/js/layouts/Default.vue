@@ -1,4 +1,5 @@
 <template>
+     
     <div class="drawer">
         <input id="my-drawer" type="checkbox" class="drawer-toggle" />
         <div class="drawer-content">
@@ -11,30 +12,31 @@
                     </div>
                     <ul class="align-self-center flex flex-row gap-4 justify-self-center">
                         <li class="flex flex-row items-center gap-2">
-                            <div class="dropdown dropdown-bottom dropdown-center m-auto">
+                            <div class="dropdown dropdown-bottom  dropdown-center m-auto">
                                 <div tabindex="0" role="button" class="rounded-[50%] w-15 h-15 bg-base-100 text-[2rem]">
                                     <p class="p-2 text-base-content place-self-center justify-self-center">{{ initials }}</p>
                                 </div>
-                                <div tabindex="0" class="dropdown-content pl-5 pb-5 menu rounded-box z-1 text-base-content w-full min-w-md bg-base-100 shadow-sm">
+                                <div tabindex="0" class="dropdown-content pl-5 pb-5 menu rounded-4xl z-1 text-base-content w-full min-w-md bg-base-300 shadow-sm">
                                     <figure v-if="$page.props.auth.user.avatar"  class="flex items-center gap-2">
                                         <img  :src="$page.props.auth.user.avatar" alt="Avatar" class="h-10 w-10 rounded-full"/>
                                         <figcaption class="text-lg font-semibold">{{ $page.props.auth.user.name }}</figcaption>
                                         </figure>
                                         <div v-else class="flex m-5 mt-5 text-xl text-center mx-auto items-center gap-2 rounded-[50%] justify-center h-15 w-15 border-4 border-accent">{{ initials }}</div>
                                         <div class="mx-auto">{{$page.props.auth.user.name}}</div>
-                                        <div class="grid grid-cols-2 justify-between gap-2 mb-5">
-                                        <div v-for="calendar in $page.props.auth.user.calendars" :key="calendar.id">
-                                        <i-mdi-calendar class="text-2xl" />
-                                        <button type="button" class="btn btn-ghost text-lg" @click="updateCalendar(calendar)">{{ calendar.name }}</button>
-                                        <div v-if="calendar.id === selectedCalendarId"><button class="btn btn-md bttn-primary">Settings</button></div>
+                                        
+                                        <div class="flex flex-row mb-5 justify-between items-center" v-for="calendar in $page.props.auth.user.calendars" :key="calendar.id">
+                                            <div class="flex flex-row items-center">
+                                                <i-mdi-calendar class="text-2xl" />
+                                                <button type="button" class="btn btn-ghost text-lg" @click="updateCalendar(calendar)">{{ calendar.name }}</button>
+                                            </div>
+                                            <div v-if="calendar.id === selectedCalendarId" @click="openSettingsModal(displayedCalendar)"><button class="btn rounded-xl btn-md btn-primary">Settings</button></div>
                                         </div>
-                                        </div>
-                            
+                              
                                     <hr />
-                                    <ul>
-                        
-                                        <li><button type="button" @click="createCalendar = true">Create New Calendar</button></li>
-                                        <li><button type="button" @click="logout">Logout</button></li>
+                                    <ul class="flex flex-col gap-2 place-items-center">
+                
+                                        <li><button type="button" class="btn btn-primary w-48 mt-5 rounded-xl" @click="openCreateModal">Create New Calendar</button></li>
+                                        <li><button type="button" class="btn btn-sm rounded-xl btn-error" @click="logout">Logout</button></li>
                                     </ul>
                                 </div>
                             </div>
@@ -47,6 +49,8 @@
             </header>
             <main class="mx-10">
                 <CreateCalendarModal :createCalendar="createCalendar" @close="createCalendar = false" />
+                <CalendarSettingsModal :settingsOpen="!!calendarToEdit" :calendar="calendarToEdit" @close="calendarToEdit = null" @deleteCalendar="deleteCalendar(calendarToEdit?.id)" />
+                            
                 <slot />
             </main>
         </div>
@@ -57,8 +61,9 @@
     </div>
 </template>
 <script setup lang="ts">
+import CalendarSettingsModal from '@/components/Planner/CalendarSettingsModal.vue';
 import CreateCalendarModal from '@/components/Planner/CreateCalendarModal.vue';
-import SidebarCalendar from '@/components/SidebarCalendar/index.vue';
+import SidebarCalendar from '@/components/SidebarCalendar/Index.vue';
 import { useDateState } from '@/composables/useDateState';
 import { getInitials } from '@/composables/useInitials';
 import { router, usePage } from '@inertiajs/vue3';
@@ -70,6 +75,7 @@ const $page = usePage() as any;
 const displayedCalendar = computed(() => $page.props.calendar);
 let calendarName = ref($page.props.calendar.name);
 let selectedCalendarId = ref($page.props.calendar.id);
+const calendarToEdit = ref(null);
 // Watch for calendar changes and update the name and selected ID
 watch(() => $page.props.calendar, (newCalendar) => {
     calendarName.value = newCalendar.name;
@@ -80,7 +86,24 @@ const updateCalendar = (calendar) => {
     router.get(route('calendars.show', { user_id: $page.props.auth.user.id, calendar: calendar.id }));
 };
 
-
+const deleteCalendar = (calendarId) => {
+    if (!calendarId) return;
+    router.delete(route('calendars.destroy', { user_id: $page.props.auth.user.id, calendar: calendarId }), {
+        onSuccess: () => {
+            // After deletion, redirect to the default calendar or another appropriate page
+            const defaultCalendar = $page.props.auth.user.calendars.find((cal) => cal.is_default);
+            if (defaultCalendar) {
+                router.get(route('calendars.show', { user_id: $page.props.auth.user.id, calendar: defaultCalendar.id }));
+               router.reload() // Ensure the page reloads to reflect changes
+            } else {
+                router.get(route('calendars.index', { user_id: $page.props.auth.user.id }));
+            }
+        },
+        onError: (errors) => {
+            console.error('Failed to delete calendar:', errors);
+        }
+    });
+};
 
 let isEditable = ref(false);
 const calendarInput = ref(null);
@@ -104,6 +127,9 @@ const handleBlur = () => {
         }
     }
 };
+const openSettingsModal = (calendar) => {
+    calendarToEdit.value = calendar;
+}
 
 let createCalendar = ref(false);
 
@@ -121,10 +147,10 @@ const nextWeek = () => {
 
 // Remove unused auth object, since user data comes from $page.props.auth.user
 const logout = () => {
-    router.post(route('logout'), {
+    router.post(route('logout'), {}, {
         onSuccess: () => {
             router.get(route('login'));
-        },
+        }
     });
 };
 
@@ -133,6 +159,10 @@ const month = computed(() => {
     console.log('Debug - selectedMonth.value:', selectedMonth.value, 'showing:', months[selectedMonth.value]);
     return `${months[selectedMonth.value]} ${selectedYear.value}`;
 });
+
+const openCreateModal = () => {
+    createCalendar.value = true;
+};
 </script>
 <style scoped>
 
@@ -157,31 +187,6 @@ const month = computed(() => {
         transform: scale(1);
     }
 }
-select {
 
-  appearance: none;
-  background-color: transparent;
-  border: none;
-  padding: 0 1em 0 0;
-  margin: 0;
-  width: 100%;
-  font-family: inherit;
-  font-size: inherit;
-  cursor: inherit;
-  line-height: inherit;
-  outline: none;
-}
-.select {
-  width: 100%;
-  min-width: 15ch;
-  max-width: 45ch;
-  border: 1px solid var(--color-primary);
-  border-radius: 0.25em;
-  padding: 0.25em 0.5em;
-  font-size: 1rem;
-  cursor: pointer;
-  line-height: 1.1;
-  background: var(--color-accent);
-  background-image: linear-gradient(to top, #var(--color-accent), #var(--color-accent) 33%);
-}
+
 </style>

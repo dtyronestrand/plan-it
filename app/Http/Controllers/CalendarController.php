@@ -56,7 +56,7 @@ class CalendarController extends Controller
 
         return to_route('calendars.show', [
             'user_id' => $request->user()->id,
-            'id' => $calendar->id,
+            'calendar' => $calendar->id,
         ])->with('success', 'Calendar created successfully.');
     }
 
@@ -113,8 +113,20 @@ class CalendarController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $user_id, Calendar $calendar)
     {
-        //
+        $this->authorize('delete', $calendar);
+
+        $calendar->delete();
+
+        // Redirect to the default calendar after deletion
+        $defaultCalendar = Calendar::where('user_id', $user_id)
+            ->where('is_default', true)
+            ->firstOrFail();
+
+        return redirect()->route('calendars.show', [
+            'user_id' => $user_id,
+            'calendar' => $defaultCalendar->id,
+        ])->with('success', 'Calendar deleted successfully.');
     }
 }

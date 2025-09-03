@@ -84,9 +84,10 @@ class TaskController extends Controller
      */
     public function update(Request $request, string $id)
     {
-      
+        \Log::info('Update request data:', $request->all());
+        \Log::info('Notes field:', ['notes' => $request->notes]);
 
-              $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'user_id' => 'required|exists:users,id',
             'calendar_id' => 'required|exists:calendars,id',
@@ -106,7 +107,7 @@ class TaskController extends Controller
             'notes' => $request->notes ?? null,
             'done' => $request->done ?? false,
             'due_date' => $request->due_date ?? null,
-            'sub_tasks' => $request->subtasks ?? [],
+            'sub_tasks' => $request->sub_tasks ?? [],
             'attachments' => $request->attachments ?? [],
         ]);
 

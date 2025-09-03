@@ -1,5 +1,5 @@
 <template>
-<div :class="{done: props.task.done}" class="col-span-2 flex justify-between group border-b border-base-content/10 cursor-pointer"><p @click="openModal(props.task)" role="button" >{{ props.task.name }} </p><Checkmark :checked="checkedValue" type="checkbox"   class="opacity-0 group-hover:opacity-100" @updateChecked="handleTaskStatus"/></div>
+<div :class="{done: props.task.done}" class="text-base-content col-span-2 flex justify-between group border-b border-base-content/10 cursor-pointer"><p @click="openModal(props.task)" role="button" >{{ props.task.name }} </p><Checkmark :checked="checkedValue" type="checkbox"   class="opacity-0 group-hover:opacity-100" @updateChecked="handleTaskStatus"/></div>
                 <!-- Modal -->
               <TaskModal v-if="selectedTask" :task="selectedTask" @close="closeModal" @updateTask="handleTask"/>
               
@@ -36,18 +36,20 @@ const handleTaskStatus = () => {
 }
 const emit = defineEmits(['taskStatus']);
 const handleTask = (updatedTask) => {
-   router.put(
-    `/tasks/${updatedTask.id}`,
-    {
+   const requestData = {
         id: updatedTask.id,
         name: updatedTask.name,
         due_date: updatedTask.due_date,
         notes: updatedTask.notes,
-        subtasks: updatedTask.subtasks,
+        sub_tasks: updatedTask.sub_tasks,
         user_id: page.props.auth.user.id,
         calendar_id: page.props.calendar.id,
         done: updatedTask.done  
-    },
+    };
+   console.log('Sending request data:', requestData);
+   router.put(
+    `/tasks/${updatedTask.id}`,
+    requestData,
     {
         onSuccess: () => {
             router.reload();
@@ -91,6 +93,6 @@ const submitForm = () => {
 <style scoped>
 .done{
     text-decoration: line-through;
-    color: gray;
+    color: var(--color-neutral-300);
 }
 </style>
